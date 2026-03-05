@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>創作ネタ・お題生成ルーレット｜Idea Codex</title>
+  <meta name="description" content="創作に悩むあなたへ。ルーレットでアイデアを生成する創作支援ツール『Idea Codex』。性質×人物×場所×目的で自由なお題を作成。お気に入り保存やSNSシェアも可能。" />
+  <meta name="keywords" content="創作ネタ, 創作アイデア, お題ジェネレーター, ランダム生成, プロットメーカー, キャラクター設定, シナリオ支援, 世界観作成, ファンタジー設定, お題配布サイト" />
+  <meta name="theme-color" content="#fdfcf8" />
+
+  <!-- OGP -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Idea Codex" />
+  <meta property="og:title" content="Idea Codex｜創作ネタをルーレットで生成" />
+  <meta property="og:description" content="Trait × Character × Place × Purpose で創作の種を生成。" />
+  <meta property="og:image" content="https://idea.codex.websupportbee.com/ogp.png" />
+  <meta property="og:url" content="https://idea.codex.websupportbee.com/" />
+
+  <!-- X / Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Idea Codex｜創作ネタをルーレットで生成" />
+  <meta name="twitter:description" content="Trait × Character × Place × Purpose で創作の種を生成。" />
+  <meta name="twitter:image" content="https://idea.codex.websupportbee.com/ogp.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap" rel="stylesheet" />
+
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+
+  <style>
+    :root{
+      --bg:#fdfcf8;
+      --text:#333;
+      --muted:#777;
+      --panel:#fffaf3;
+      --border:#e0d7c0;
+      --border2:#ddd;
+      --btn:#444;
+      --btn-hover:#222;
+      --shadow:0 3px 6px rgba(0,0,0,0.1);
+      --radius:12px;
+      --max:720px;
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      font-family:'EB Garamond', serif;
+      margin:0;
+      padding:24px 16px 56px;
+      background:var(--bg);
+      color:var(--text);
+      text-align:center;
+    }
+
+    .container{
+      max-width:var(--max);
+      margin:0 auto;
+    }
+
+    header h1{
+      font-size:2.4rem;
+      line-height:1.15;
+      margin:12px 0 6px;
+    }
+
+    .description{
+      margin:0 0 18px;
+      color:var(--muted);
+    }
+
+    section{ margin:28px 0; }
+
+    /* output */
+    #output{
+      background:var(--panel);
+      padding:18px 16px;
+      border-radius:var(--radius);
+      border:1px solid var(--border);
+      font-weight:700;
+      font-size:1.25rem;
+      max-width:100%;
+      margin:14px auto 0;
+      text-align:center;
+
+      transition: opacity .18s ease, transform .18s ease;
+      will-change: opacity, transform;
+    }
+    #output.is-changing{
+      opacity: 0;
+      transform: translateY(4px);
+    }
+
+    .actions{
+      display:flex;
+      justify-content:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+
+    button{
+      font-family:'EB Garamond', serif;
+      background:var(--btn);
+      color:#fff;
+      border-radius:10px;
+      padding:10px 18px;
+      border:0;
+      box-shadow:var(--shadow);
+      transition:transform .15s ease, background-color .15s ease;
+      cursor:pointer;
+    }
+    button:hover{
+      background:var(--btn-hover);
+      transform:scale(1.03);
+    }
+    button:focus-visible{
+      outline:3px solid rgba(0,0,0,.35);
+      outline-offset:3px;
+    }
+
+    hr{
+      border:none;
+      border-top:1px solid #ccc;
+      margin:26px auto;
+      max-width:420px;
+    }
+
+    h2{
+      font-size:1.1rem;
+      margin:0 0 10px;
+      font-weight:700;
+    }
+
+    .hint{
+      margin:0 0 10px;
+      color:#b7b7b7;
+      font-size:0.9rem;
+    }
+
+    /* favorites */
+    #favorites{
+      max-width:700px;
+      margin:0 auto;
+      text-align:center;
+    }
+    #favoriteList{
+      list-style:none;
+      padding:0;
+      margin:0;
+    }
+    #favoriteList li{
+      margin-bottom:10px;
+      padding:10px 10px;
+      background:#fff;
+      border:1px solid var(--border2);
+      border-radius:10px;
+      display:flex;
+      gap:10px;
+      justify-content:space-between;
+      align-items:flex-start;
+    }
+    #favoriteList li.favorite-empty{
+      justify-content:center;       /* ←ここがセンター */
+      text-align:center;
+      color:#777;
+      background:transparent;
+      border:1px dashed #ddd;
+    }
+    #favoriteList li span{
+      flex:1;
+      text-align:left;
+      line-height:1.4;
+      white-space:pre-wrap;
+      word-break:break-word;
+    }
+    #favoriteList button{
+      font-size:.9rem;
+      background:#888;
+      padding:7px 10px;
+      border-radius:8px;
+      box-shadow:none;
+      white-space:nowrap;
+    }
+    #favoriteList button:hover{
+      background:#666;
+      transform:none;
+    }
+
+    /* history */
+    #history{
+      max-width:700px;
+      margin:0 auto;
+      text-align:center;
+    }
+    #historyList{
+      list-style:none;
+      padding:0;
+      margin:0;
+    }
+    #historyList li{
+      margin-bottom:10px;
+      padding:10px 10px;
+      background:#fffdf8;
+      border:1px solid #e6dec7;
+      border-radius:10px;
+      display:flex;
+      gap:10px;
+      justify-content:space-between;
+      align-items:flex-start;
+    }
+    #historyList li.history-empty{
+      justify-content:center;
+      text-align:center;
+      color:#777;
+      background:transparent;
+      border:1px dashed #ddd;
+    }
+    #historyList li span{
+      flex:1;
+      text-align:left;
+      line-height:1.4;
+      white-space:pre-wrap;
+      word-break:break-word;
+    }
+    #historyList button{
+      font-size:.9rem;
+      background:#888;
+      padding:7px 10px;
+      border-radius:8px;
+      box-shadow:none;
+      white-space:nowrap;
+    }
+    #historyList button:hover{
+      background:#666;
+      transform:none;
+    }
+
+    /* share / links */
+    .linkline{
+      margin:0;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+    a{ color:inherit; }
+    a:hover{ text-decoration:underline; }
+
+    /* locks */
+    .locks{
+      display:flex;
+      justify-content:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:10px;
+      max-width:520px;
+      margin-left:auto;
+      margin-right:auto;
+      background:#fffdf8;
+      border:1px solid #e6dec7;
+    }
+    .locks label{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      font-size:.95rem;
+      color:var(--muted);
+      user-select:none;
+      cursor:pointer;
+    }
+    .locks input{ transform:translateY(1px); }
+
+    footer{
+      margin-top:46px;
+      font-size:.95rem;
+      color:#999;
+    }
+    footer small{
+      display:block;
+      font-size:.85rem;
+      margin-top:8px;
+    }
+
+    /* toast */
+    #toast{
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,.82);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 999px;
+      box-shadow: 0 6px 18px rgba(0,0,0,.18);
+      font-size: .95rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease, transform .2s ease;
+      z-index: 9999;
+    }
+    #toast.show{
+      opacity: 1;
+      transform: translateX(-50%) translateY(-4px);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>Idea Codex – Story Idea Generator</h1>
+
+      <p class="description" lang="ja">
+        創作の種をひとつどうぞ。<br />
+        性質 × 人物 × 場所 × 目的から物語のアイデアを生成します。
+      </p>
+
+      <p class="description" lang="en">
+        Generate random story seeds using<br />
+        Trait × Character × Place × Purpose.<br /><br />
+        Simple one-click idea generator for writers and creators.
+      </p>
+    </header>
+
+    <main>
+      <section aria-labelledby="idea-title">
+        <h2 id="idea-title">今日の創作の種 / Today's story seed</h2>
+
+        <div id="output" role="status" aria-live="polite" aria-atomic="true">
+          結果がここに表示されます。 / Result will appear here.
+        </div>
+
+        <div class="actions">
+          <button type="button" id="btnGenerate">生成 / Generate</button>
+          <button type="button" id="btnRerollCharacter">キャラだけ / Character</button>
+          <button type="button" id="btnRerollPlace">場所だけ / Place</button>
+          <button type="button" id="saveFavorite">保存 / Save</button>
+          <button type="button" id="copyIdea">コピー / Copy</button>
+        </div>
+
+        <!-- 無料版：2ロック（キャラ・場所） -->
+        <div class="locks" aria-label="Locks">
+          <label><input type="checkbox" id="lockCharacter"> 人物固定 / Lock character</label>
+          <label><input type="checkbox" id="lockPlace"> 場所固定 / Lock place</label>
+        </div>
+      </section>
+
+      <hr />
+
+      <section id="history" aria-labelledby="history-title">
+        <h2 id="history-title">履歴 / History</h2>
+        <p class="hint">直近10件（この端末のブラウザに保存されます） / Last 10 items (saved in this browser)</p>
+        <ul id="historyList" aria-label="History list"></ul>
+      </section>
+
+      <hr />
+
+      <section id="favorites" aria-labelledby="favorites-title">
+        <h2 id="favorites-title">お気に入り / Favorites</h2>
+        <p class="hint">最大50件（この端末のブラウザに保存されます） / Up to 50 items (saved in this browser)</p>
+        <ul id="favoriteList" aria-label="Favorites list"></ul>
+      </section>
+
+      <hr />
+
+      <section id="share" aria-labelledby="share-title">
+        <h2 id="share-title">シェア / Share</h2>
+        <div class="actions">
+          <button type="button" id="shareX" aria-label="Share on X">X / Share on X</button>
+          <button type="button" id="shareBluesky" aria-label="Share on Bluesky">Bluesky / Share</button>
+        </div>
+      </section>
+
+      <section id="affiliate" aria-labelledby="memo-title">
+        <h2 id="memo-title">物語の種・世界観メモ / Notes</h2>
+        <p class="linkline">
+          <span lang="ja">※物語の種・世界観メモは</span>
+          <span lang="en">Notes:</span>
+          <a href="https://note.com/nim_niigatalife" target="_blank" rel="noopener noreferrer">note.com</a>
+        </p>
+      </section>
+
+      <footer>
+        <p>【管理者 / Maintainer】朔月</p>
+        <small>
+          <span lang="ja">不具合・コメントは</span>
+          <span lang="en">Bugs / feedback:</span>
+          <a href="https://note.com/nim_niigatalife" target="_blank" rel="noopener noreferrer">note</a>
+        </small>
+      </footer>
+
+      <div id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+    </main>
+  </div>
+
+  <script src="main.js?v=1"></script>
+</body>
+</html>
